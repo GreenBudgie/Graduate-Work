@@ -11,9 +11,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.provider.SortDirection
+import org.springframework.dao.DataIntegrityViolationException
 import ru.sut.graduate.entity.GenericEntity
 import ru.sut.graduate.service.GenericService
 import java.lang.IllegalStateException
+import javax.validation.ConstraintViolationException
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 
@@ -29,7 +31,12 @@ class EntityGrid<T : GenericEntity>(
         editor.binder = Binder(entityClass.java)
         addIDColumn()
         editor.addSaveListener {
-            service.save(it.item)
+            try {
+                service.save(it.item)
+            } catch(exception: DataIntegrityViolationException) {
+                ErrorNotification("Невозможно сохранить сущность с данными параметрами")
+                loadItems()
+            }
         }
     }
 
