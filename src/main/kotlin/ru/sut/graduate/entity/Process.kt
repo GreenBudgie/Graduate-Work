@@ -4,11 +4,9 @@ import javax.persistence.*
 
 @Entity
 class Process(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     val stage: Stage? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     val workflow: Workflow? = null,
-)
+) : GenericEntity(id)

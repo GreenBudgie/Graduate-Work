@@ -1,10 +1,11 @@
-package ru.sut.graduate.view
+package ru.sut.graduate.ui.view
 
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import ru.sut.graduate.entity.Process
+import ru.sut.graduate.ui.component.MainLayout
 
 @Route(layout = MainLayout::class)
 @PageTitle("Заявки")
