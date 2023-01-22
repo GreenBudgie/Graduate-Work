@@ -29,6 +29,49 @@ abstract class GenericService<E : GenericEntity, R : JpaRepository<E, Long>> {
 
     final fun findAll(): List<E> = repository.findAll()
 
+    final fun findAllButThis(entity: E): List<E> = findAll().filter { it.id != entity.id }
+
+    /**
+     * Performs the delete operation on the given entity and shows notification if it's impossible.
+     *
+     * @return whether the operation was successful
+     */
+    final fun deleteOnUI(id: Long): Boolean {
+        if(!repository.existsById(id)) {
+            ClosableNotification.error("Сущности с ID $id не существует")
+            return false
+        }
+        try {
+            delete(id)
+            ClosableNotification.success("Успешно удалено")
+            return true
+        } catch(exception: Exception) {
+            if(exception is DataIntegrityViolationException
+                || exception is ConstraintViolationException) {
+                ClosableNotification.error(
+                    "Невозможно удалить сущность, так как одна из других сущностей ссылается на нее"
+                )
+            } else {
+                ClosableNotification.error("Непредвиденная ошибка при удалении")
+            }
+        }
+        return false
+    }
+
+    /**
+     * Performs the delete operation on the given entity by its id and shows notification if it's impossible.
+     *
+     * @return whether the operation was successful
+     */
+    final fun deleteOnUI(entity: E): Boolean {
+        val id = entity.id
+        if(id == null) {
+            ClosableNotification.error("Невозможно удалить сущность без ID")
+            return false
+        }
+        return deleteOnUI(id)
+    }
+
     /**
      * Saves the given entity with validation if it's possible and returns the saved entity.
      * If not, shows the notification on UI and returns null.
@@ -60,7 +103,7 @@ abstract class GenericService<E : GenericEntity, R : JpaRepository<E, Long>> {
 
     protected final fun isFieldNotUnique(entity: E, field: KProperty1<E, Any?>): Boolean {
         val fieldValue = field.get(entity) ?: return false
-        val entities = findAll()
+        val entities = findAllButThis(entity)
         val hasSameFieldValue = entities.any {
             fieldValue == field.get(it)
         }

@@ -35,7 +35,7 @@ class ClosableNotification private constructor(
         private const val durationPerSymbol = 25
 
         fun error(text: String = "Ошибка") {
-            val baseDuration = 3000
+            val baseDuration = 3250
             val additionalDuration = text.length * durationPerSymbol
             error(text, baseDuration + additionalDuration)
         }
@@ -45,7 +45,7 @@ class ClosableNotification private constructor(
         }
 
         fun success(text: String = "Успешно") {
-            val baseDuration = 2000
+            val baseDuration = 2250
             val additionalDuration = text.length * durationPerSymbol
             success(text, baseDuration + additionalDuration)
         }

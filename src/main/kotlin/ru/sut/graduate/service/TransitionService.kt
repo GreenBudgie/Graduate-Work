@@ -17,7 +17,7 @@ class TransitionService : GenericService<Transition, TransitionRepository>() {
             ClosableNotification.error("Начальное и конечное состояния должны различаться")
             return false
         }
-        val existingTransitions = findAll()
+        val existingTransitions = findAllButThis(entity)
         val sameStagesExist = existingTransitions.any {
             it.fromStage?.id == entity.fromStage?.id && it.toStage?.id == entity.toStage?.id
         }

@@ -11,6 +11,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.provider.SortDirection
+import com.vaadin.flow.function.SerializableFunction
+import com.vaadin.flow.function.ValueProvider
 import ru.sut.graduate.entity.GenericEntity
 import ru.sut.graduate.service.GenericService
 import kotlin.reflect.KClass
@@ -21,6 +23,8 @@ class EntityGrid<T : GenericEntity>(
     private val entityClass: KClass<T>,
     private val service: GenericService<T, *>
 ) : Grid<T>() {
+
+    private val maxTextLengthWithNoTooltip = 25
 
     private var deleteEnabled = false
     private var editEnabled = false
@@ -65,6 +69,17 @@ class EntityGrid<T : GenericEntity>(
         return column
     }
 
+    override fun addColumn(valueProvider: ValueProvider<T, *>): Column<T> {
+        val column = super.addColumn(valueProvider)
+        column.tooltipGenerator = SerializableFunction {
+            val text = valueProvider.apply(it).toString()
+            if(text.length < maxTextLengthWithNoTooltip) {
+                return@SerializableFunction null
+            }
+            return@SerializableFunction text
+        }
+        return column
+    }
 
     fun addDeleteAction(): Column<T> {
         if(deleteEnabled) {
@@ -77,8 +92,9 @@ class EntityGrid<T : GenericEntity>(
             button.icon = Icon(VaadinIcon.TRASH)
             button.themeName = ButtonVariant.LUMO_ICON.variantName
             button.addClickListener {
-                service.delete(entity)
-                loadItems()
+                if(service.deleteOnUI(entity)) {
+                    loadItems()
+                }
             }
             button
         }
@@ -121,7 +137,7 @@ class EntityGrid<T : GenericEntity>(
         saveButton.setTooltipText("Сохранить")
         saveButton.addClickListener {
             editor.save()
-            recalculateColumnWidths()
+            loadItems()
         }
 
         val cancelButton = Button()
