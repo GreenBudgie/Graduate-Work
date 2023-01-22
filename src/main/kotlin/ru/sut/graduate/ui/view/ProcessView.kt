@@ -7,8 +7,8 @@ import com.vaadin.flow.router.Route
 import ru.sut.graduate.entity.Process
 import ru.sut.graduate.ui.component.MainLayout
 
-@Route(layout = MainLayout::class)
-@PageTitle("Заявки")
+@Route(value = "processes", layout = MainLayout::class)
+@PageTitle("УП | Заявки")
 class ProcessView : VerticalLayout() {
 
     private val grid = Grid(Process::class.java)

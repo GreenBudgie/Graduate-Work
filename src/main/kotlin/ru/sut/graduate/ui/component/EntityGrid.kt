@@ -11,13 +11,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.provider.SortDirection
-import org.springframework.dao.DataIntegrityViolationException
 import ru.sut.graduate.entity.GenericEntity
 import ru.sut.graduate.service.GenericService
-import java.lang.IllegalStateException
-import javax.validation.ConstraintViolationException
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 
 class EntityGrid<T : GenericEntity>(
     private val entityClass: KClass<T>,
@@ -31,13 +29,25 @@ class EntityGrid<T : GenericEntity>(
         editor.binder = Binder(entityClass.java)
         addIDColumn()
         editor.addSaveListener {
-            try {
-                service.save(it.item)
-            } catch(exception: DataIntegrityViolationException) {
-                ErrorNotification("Невозможно сохранить сущность с данными параметрами")
+            if(service.saveOnUI(it.item) != null) {
                 loadItems()
             }
         }
+    }
+
+    fun <D : GenericEntity> addDropdownEditableColumn(
+        entityProperty: KMutableProperty1<T, D?>,
+        displayProperty: KProperty1<T, Any?>,
+        dropdown: EntityDropdown<D>
+    ): Column<T> {
+        dropdown.setWidthFull()
+        val fieldBinder = editor.binder.forField(dropdown)
+        fieldBinder.asRequired()
+        fieldBinder.bind(entityProperty.getter, entityProperty.setter)
+
+        val column = addColumn { displayProperty.get(it).toString() }
+        column.editorComponent = dropdown
+        return column
     }
 
     fun addEditableColumn(property: KMutableProperty1<T, String?>,

@@ -9,5 +9,5 @@ import javax.persistence.MappedSuperclass
 abstract class GenericEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-)
+    override var id: Long? = null
+) : WithId
