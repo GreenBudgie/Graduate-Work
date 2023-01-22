@@ -64,7 +64,7 @@ class TransitionView(
                 fromStage = fromStageDropdown.value,
                 toStage = toStageDropdown.value
             )
-            transitionService.saveOnUI(transition) ?: return@addClickListener
+            if(!transitionService.saveOnUI(transition)) return@addClickListener
             nameInput.clear()
             fromStageDropdown.clear()
             toStageDropdown.clear()

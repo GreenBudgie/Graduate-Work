@@ -48,7 +48,7 @@ class StageView(
                 name = nameInput.value,
                 description = descriptionInput.value
             )
-            stageService.saveOnUI(stage) ?: return@addClickListener
+            if(!stageService.saveOnUI(stage)) return@addClickListener
             nameInput.clear()
             descriptionInput.clear()
             grid.loadItems()
