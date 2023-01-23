@@ -4,11 +4,12 @@ import javax.persistence.*
 
 @Entity
 class Workflow(
-    id: Long? = null,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    override var id: Long? = null,
     var name: String? = null,
     var description: String? = null,
     var areaName: String? = null,
     @ManyToMany
-    @JoinTable
-    var transitions: List<Transition>? = emptyList()
-) : GenericEntity(id)
+    var transitions: Set<Transition> = emptySet()
+) : GenericEntity()

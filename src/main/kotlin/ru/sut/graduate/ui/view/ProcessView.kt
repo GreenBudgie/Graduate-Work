@@ -14,7 +14,7 @@ class ProcessView : VerticalLayout() {
     private val grid = Grid(Process::class.java)
 
     init {
-        grid.setItems(Process(1))
+        grid.setItems(Process())
         add(grid)
     }
 

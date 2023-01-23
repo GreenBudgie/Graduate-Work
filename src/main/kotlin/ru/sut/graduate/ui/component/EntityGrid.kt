@@ -92,9 +92,8 @@ class EntityGrid<T : GenericEntity>(
             button.icon = Icon(VaadinIcon.TRASH)
             button.themeName = ButtonVariant.LUMO_ICON.variantName
             button.addClickListener {
-                if(service.deleteOnUI(entity)) {
-                    loadItems()
-                }
+                service.deleteOnUI(entity)
+                loadItems()
             }
             button
         }

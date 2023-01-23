@@ -6,10 +6,9 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Stage(
+class ProcessParameter(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long? = null,
     var name: String? = null,
-    var description: String? = null,
 ) : GenericEntity()

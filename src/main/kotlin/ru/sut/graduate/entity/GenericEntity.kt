@@ -1,13 +1,10 @@
 package ru.sut.graduate.entity
 
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import java.io.Serializable
 import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 abstract class GenericEntity(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    override var id: Long? = null
-) : WithId
+    @Transient
+    open var id: Long? = null
+) : Serializable

@@ -9,19 +9,19 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import ru.sut.graduate.entity.Stage
-import ru.sut.graduate.service.StageService
+import ru.sut.graduate.entity.ProcessParameter
+import ru.sut.graduate.service.ProcessParameterService
 import ru.sut.graduate.ui.component.ClosableNotification
 import ru.sut.graduate.ui.component.EntityGrid
 import ru.sut.graduate.ui.component.MainLayout
 
-@Route(value = "", layout = MainLayout::class)
-@PageTitle("УП | Состояния")
-class StageView(
-    private val stageService: StageService
+@Route(value = "processParameters", layout = MainLayout::class)
+@PageTitle("УП | Параметры заявок")
+class ProcessParameterView(
+    private val processParameterService: ProcessParameterService
 ) : VerticalLayout() {
 
-    private val grid = EntityGrid(Stage::class, stageService)
+    private val grid = EntityGrid(ProcessParameter::class, processParameterService)
 
     init {
         addForm()
@@ -32,41 +32,29 @@ class StageView(
     private fun addForm() {
         val nameInput = TextField()
         nameInput.placeholder = "Наименование"
-        nameInput.width = "35%"
-        val descriptionInput = TextField()
-        descriptionInput.placeholder = "Описание"
-        descriptionInput.width = "50%"
-        val addStageButton = Button("Добавить", Icon(VaadinIcon.PLUS))
-        addStageButton.width = "15%"
-        addStageButton.minWidth = "200px"
-        addStageButton.addClickListener {
+        nameInput.width = "80%"
+        val addParameterButton = Button("Добавить", Icon(VaadinIcon.PLUS))
+        addParameterButton.width = "20%"
+        addParameterButton.minWidth = "200px"
+        addParameterButton.addClickListener {
             if(nameInput.value.isBlank()) {
-                ClosableNotification.error("Укажите наименование состояния")
+                ClosableNotification.error("Укажите наименование параметра заявки")
                 return@addClickListener
             }
-            val stage = Stage(
-                name = nameInput.value,
-                description = descriptionInput.value
-            )
-            stageService.saveOnUI(stage)
+            val processParameter = ProcessParameter(name = nameInput.value)
+            processParameterService.saveOnUI(processParameter)
             nameInput.clear()
-            descriptionInput.clear()
             grid.loadItems()
         }
-        val layout = HorizontalLayout(nameInput, descriptionInput, addStageButton)
-        layout.setWidthFull()
+        val layout = HorizontalLayout(nameInput, addParameterButton)
+        layout.width = "70%"
         layout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
         add(layout)
     }
 
     private fun addGrid() {
-        grid.addEditableColumn(Stage::name, true)
+        grid.addEditableColumn(ProcessParameter::name, true)
             .setHeader("Наименование")
-            .setFlexGrow(0)
-            .setAutoWidth(true)
-            .isSortable = true
-        grid.addEditableColumn(Stage::description)
-            .setHeader("Описание")
             .isSortable = true
         grid.addEditAction()
         grid.addDeleteAction()

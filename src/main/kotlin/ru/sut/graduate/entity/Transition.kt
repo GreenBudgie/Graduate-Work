@@ -1,19 +1,18 @@
 package ru.sut.graduate.entity
 
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.persistence.Transient
+import javax.persistence.*
 
 @Entity
 class Transition(
-    id: Long? = null,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    override var id: Long? = null,
     var name: String? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     var fromStage: Stage? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     var toStage: Stage? = null,
-) : GenericEntity(id) {
+) : GenericEntity() {
 
     @get:Transient
     val fromStageName get() = fromStage?.name
