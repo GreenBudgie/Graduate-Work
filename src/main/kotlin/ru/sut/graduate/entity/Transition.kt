@@ -12,12 +12,6 @@ class Transition(
     var fromStage: Stage? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     var toStage: Stage? = null,
-) : GenericEntity() {
-
-    @get:Transient
-    val fromStageName get() = fromStage?.name
-
-    @get:Transient
-    val toStageName get() = toStage?.name
-
-}
+    @ManyToMany(fetch = FetchType.EAGER)
+    var parameters: Set<ProcessParameter> = emptySet()
+) : GenericEntity()

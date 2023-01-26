@@ -9,20 +9,20 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
+import ru.sut.graduate.entity.ProcessParameter
 import ru.sut.graduate.entity.Stage
 import ru.sut.graduate.entity.Transition
+import ru.sut.graduate.service.ProcessParameterService
 import ru.sut.graduate.service.StageService
 import ru.sut.graduate.service.TransitionService
-import ru.sut.graduate.ui.component.ClosableNotification
-import ru.sut.graduate.ui.component.EntityDropdown
-import ru.sut.graduate.ui.component.EntityGrid
-import ru.sut.graduate.ui.component.MainLayout
+import ru.sut.graduate.ui.component.*
 
 @Route(value = "transitions", layout = MainLayout::class)
 @PageTitle("УП | Переходы")
 class TransitionView(
     private val transitionService: TransitionService,
-    private val stageService: StageService
+    private val stageService: StageService,
+    private val processParameterService: ProcessParameterService
 ) : VerticalLayout() {
 
     private val grid = EntityGrid(Transition::class, transitionService)
@@ -36,23 +36,27 @@ class TransitionView(
     private fun addForm() {
         val fromStageDropdown = EntityDropdown(Stage::name, stageService)
         fromStageDropdown.placeholder = "Из состояния"
-        fromStageDropdown.width = "25%"
+        fromStageDropdown.width = "30%"
+
         val toStageDropdown = EntityDropdown(Stage::name, stageService)
         toStageDropdown.placeholder = "В состояние"
-        toStageDropdown.width = "25%"
+        toStageDropdown.width = "30%"
+
         val nameInput = TextField()
         nameInput.placeholder = "Наименование"
-        nameInput.width = "35%"
+        nameInput.width = "40%"
+
+        val parametersDropdown = EntityMultiDropdown(ProcessParameter::name, processParameterService)
+        parametersDropdown.placeholder = "Параметры заявки"
+        parametersDropdown.width = "60%"
+
         val addTransitionButton = Button("Добавить", Icon(VaadinIcon.PLUS))
-        addTransitionButton.width = "15%"
+        addTransitionButton.width = "40%"
         addTransitionButton.minWidth = "200px"
+
         addTransitionButton.addClickListener {
             if(nameInput.value.isBlank()) {
                 ClosableNotification.error("Укажите наименование перехода")
-                return@addClickListener
-            }
-            if(fromStageDropdown.isEmpty) {
-                ClosableNotification.error("Укажите начальное состояние")
                 return@addClickListener
             }
             if(toStageDropdown.isEmpty) {
@@ -62,40 +66,55 @@ class TransitionView(
             val transition = Transition(
                 name = nameInput.value,
                 fromStage = fromStageDropdown.value,
-                toStage = toStageDropdown.value
+                toStage = toStageDropdown.value,
+                parameters = parametersDropdown.value
             )
             transitionService.saveOnUI(transition)
             nameInput.clear()
             fromStageDropdown.clear()
             toStageDropdown.clear()
+            parametersDropdown.clear()
             grid.loadItems()
         }
-        val layout = HorizontalLayout(fromStageDropdown, toStageDropdown, nameInput, addTransitionButton)
-        layout.setWidthFull()
-        layout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
-        add(layout)
+
+        val topLayout = HorizontalLayout(fromStageDropdown, toStageDropdown, nameInput)
+        topLayout.setWidthFull()
+        topLayout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
+
+        val bottomLayout = HorizontalLayout(parametersDropdown, addTransitionButton)
+        bottomLayout.setWidthFull()
+        bottomLayout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
+
+        add(VerticalLayout(topLayout, bottomLayout))
     }
 
     private fun addGrid() {
         grid.addEditableColumn(Transition::name, true)
             .setHeader("Наименование")
             .setFlexGrow(0)
-            .setAutoWidth(true)
+            .setWidth("25%")
             .isSortable = true
         grid.addDropdownEditableColumn(
             Transition::fromStage,
-            Transition::fromStageName,
             EntityDropdown(Stage::name, stageService)
         )
             .setHeader("Из состояния")
+            .setWidth("15%")
             .isSortable = true
         grid.addDropdownEditableColumn(
             Transition::toStage,
-            Transition::toStageName,
             EntityDropdown(Stage::name, stageService)
         )
             .setHeader("В состояние")
+            .setWidth("15%")
             .isSortable = true
+        grid.addMultiDropdownEditableColumn(
+            Transition::parameters,
+            EntityMultiDropdown(ProcessParameter::name, processParameterService)
+        )
+            .setHeader("Параметры")
+            .setAutoWidth(true)
+            .isSortable = false
         grid.addEditAction()
         grid.addDeleteAction()
         grid.loadItems()

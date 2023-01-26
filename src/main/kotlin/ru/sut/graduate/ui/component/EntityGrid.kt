@@ -17,7 +17,6 @@ import ru.sut.graduate.entity.GenericEntity
 import ru.sut.graduate.service.GenericService
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
 
 class EntityGrid<T : GenericEntity>(
     private val entityClass: KClass<T>,
@@ -33,15 +32,13 @@ class EntityGrid<T : GenericEntity>(
         editor.binder = Binder(entityClass.java)
         addIDColumn()
         editor.addSaveListener {
-            if(service.saveOnUI(it.item) != null) {
-                loadItems()
-            }
+            service.saveOnUI(it.item)
+            loadItems()
         }
     }
 
     fun <D : GenericEntity> addDropdownEditableColumn(
         entityProperty: KMutableProperty1<T, D?>,
-        displayProperty: KProperty1<T, Any?>,
         dropdown: EntityDropdown<D>
     ): Column<T> {
         dropdown.setWidthFull()
@@ -49,7 +46,27 @@ class EntityGrid<T : GenericEntity>(
         fieldBinder.asRequired()
         fieldBinder.bind(entityProperty.getter, entityProperty.setter)
 
-        val column = addColumn { displayProperty.get(it).toString() }
+        val column = addColumn {
+            val entity = entityProperty.get(it) ?: return@addColumn ""
+            dropdown.displayFieldGetter(entity).toString()
+        }
+        column.editorComponent = dropdown
+        return column
+    }
+
+    fun <D : GenericEntity> addMultiDropdownEditableColumn(
+        entityProperty: KMutableProperty1<T, Set<D>>,
+        dropdown: EntityMultiDropdown<D>
+    ): Column<T> {
+        dropdown.setWidthFull()
+        val fieldBinder = editor.binder.forField(dropdown)
+        fieldBinder.bind(entityProperty.getter, entityProperty.setter)
+
+        val column = addColumn {
+            val entities = entityProperty.get(it)
+            val displayProperties = entities.mapNotNull { entity -> dropdown.displayFieldGetter(entity) }
+            displayProperties.joinToString(", ")
+        }
         column.editorComponent = dropdown
         return column
     }
