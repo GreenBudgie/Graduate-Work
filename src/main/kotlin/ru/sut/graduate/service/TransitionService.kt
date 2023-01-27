@@ -5,6 +5,7 @@ import ru.sut.graduate.entity.Transition
 import ru.sut.graduate.exception.EntityValidationException
 import ru.sut.graduate.repository.TransitionRepository
 
+
 @Service
 class TransitionService : GenericService<Transition, TransitionRepository>() {
 
@@ -15,8 +16,12 @@ class TransitionService : GenericService<Transition, TransitionRepository>() {
             "Переход с таким названием уже существует"
         )
         if(entity.toStage == null) {
-            throw EntityValidationException("Укажите конечное состояние")
+            throw EntityValidationException("Конечное состояние не указано")
         }
+    }
+
+    fun findForCreation(transitions: Collection<Transition>): List<Transition> {
+        return transitions.filter { it.fromStage == null }
     }
 
 }
