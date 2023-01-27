@@ -2,6 +2,7 @@ package ru.sut.graduate.api.getWorkflow
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.sut.graduate.entity.Stage
 import ru.sut.graduate.entity.Transition
@@ -15,13 +16,12 @@ class GetWorkflowController(
 ) {
 
     @GetMapping
-    fun execute(): GetWorkflowResponse {
-        val workflows = workflowService.findAll()
-        val workflowsData = workflows.map { convertToWorkflowData(it) }
-        return GetWorkflowResponse(workflowsData)
+    fun execute(@RequestParam workflowId: Long): GetWorkflowResponse {
+        val workflow = workflowService.findById(workflowId)
+        return convertToResponse(workflow)
     }
 
-    private fun convertToWorkflowData(workflow: Workflow): WorkflowData {
+    private fun convertToResponse(workflow: Workflow): GetWorkflowResponse {
         val transitions = workflow.transitions
         val stages = transitions
             .flatMap { listOf(it.fromStage, it.toStage) }
@@ -29,7 +29,7 @@ class GetWorkflowController(
             .distinctBy { it.id }
         val stagesData = stages.map { convertToStageData(it) }
         val transitionsData = transitions.map { convertToTransitionData(it) }
-        return WorkflowData(
+        return GetWorkflowResponse(
             workflow.id!!,
             workflow.name!!,
             stagesData,
@@ -46,7 +46,8 @@ class GetWorkflowController(
             transition.id!!,
             transition.name!!,
             transition.fromStage?.id,
-            transition.toStage!!.id!!
+            transition.toStage!!.id!!,
+            transition.schema?.id
         )
     }
 

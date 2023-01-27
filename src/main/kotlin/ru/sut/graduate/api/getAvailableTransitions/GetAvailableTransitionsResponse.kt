@@ -13,5 +13,6 @@ data class WorkflowData(
 data class TransitionData(
     val id: Long,
     val name: String,
-    val toStageId: Long
+    val toStageId: Long,
+    val schemaId: Long?
 )

@@ -74,7 +74,7 @@ abstract class GenericService<E : GenericEntity, R : JpaRepository<E, Long>> {
         delete(id)
     }
 
-    final fun findById(id: Long): E? = repository.findById(id).orElse(null)
+    final fun findById(id: Long): E = repository.findById(id).orElseThrow()
 
     final fun findAll(): List<E> = repository.findAll()
 

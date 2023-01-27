@@ -48,7 +48,7 @@ class TransitionView(
 
         val nameInput = TextField()
         nameInput.placeholder = "Наименование"
-        nameInput.width = "40%"
+        nameInput.width = "70%"
 
         val addTransitionButton = Button("Добавить", Icon(VaadinIcon.PLUS))
         addTransitionButton.width = "30%"
@@ -82,6 +82,7 @@ class TransitionView(
         topLayout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
 
         val bottomLayout = HorizontalLayout(nameInput, addTransitionButton)
+        bottomLayout.width = "60%"
         bottomLayout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
 
         add(VerticalLayout(topLayout, bottomLayout))
@@ -91,28 +92,28 @@ class TransitionView(
         grid.addEditableColumn(Transition::name)
             .setHeader("Наименование")
             .setFlexGrow(0)
-            .setWidth("25%")
+            .setWidth("15%")
             .isSortable = true
         grid.addDropdownEditableColumn(
             Transition::fromStage,
             EntityDropdown(Stage::name, stageService)
         )
             .setHeader("Из состояния")
-            .setWidth("25%")
+            .setWidth("15%")
             .isSortable = true
         grid.addDropdownEditableColumn(
             Transition::toStage,
             EntityDropdown(Stage::name, stageService)
         )
             .setHeader("В состояние")
-            .setWidth("25%")
+            .setWidth("15%")
             .isSortable = true
         grid.addDropdownEditableColumn(
             Transition::schema,
             EntityDropdown(Schema::name, schemaService)
         )
             .setHeader("Схема данных")
-            .setWidth("25%")
+            .setAutoWidth(true)
             .isSortable = false
         grid.addEditAction()
         grid.addDeleteAction()

@@ -37,7 +37,8 @@ class GetAvailableTransitionsController(
         return TransitionData(
             transition.id!!,
             transition.name!!,
-            transition.toStage!!.id!!
+            transition.toStage!!.id!!,
+            transition.schema?.id
         )
     }
 
