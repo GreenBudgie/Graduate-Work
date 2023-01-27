@@ -5,11 +5,4 @@ import ru.sut.graduate.entity.Process
 import ru.sut.graduate.repository.ProcessRepository
 
 @Service
-class ProcessService : GenericService<Process, ProcessRepository>() {
-
-
-    override fun validate(entity: Process) {
-
-    }
-
-}
+class ProcessService : GenericService<Process, ProcessRepository>()

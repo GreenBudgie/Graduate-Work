@@ -12,6 +12,6 @@ class Transition(
     var fromStage: Stage? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     var toStage: Stage? = null,
-    @ManyToMany(fetch = FetchType.EAGER)
-    var parameters: Set<ProcessParameter> = emptySet()
+    @ManyToOne(fetch = FetchType.LAZY)
+    var schema: Schema? = null
 ) : GenericEntity()

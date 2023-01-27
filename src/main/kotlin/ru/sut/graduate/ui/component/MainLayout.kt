@@ -23,6 +23,7 @@ class MainLayout : AppLayout() {
 
         tabs.add(Tab(RouterLink("Состояния", StageView::class.java)))
         tabs.add(Tab(RouterLink("Параметры заявок", ProcessParameterView::class.java)))
+        tabs.add(Tab(RouterLink("Схемы данных", SchemaView::class.java)))
         tabs.add(Tab(RouterLink("Переходы", TransitionView::class.java)))
         tabs.add(Tab(RouterLink("Маршруты", WorkflowView::class.java)))
         tabs.add(Tab(RouterLink("Заявки", ProcessView::class.java)))
