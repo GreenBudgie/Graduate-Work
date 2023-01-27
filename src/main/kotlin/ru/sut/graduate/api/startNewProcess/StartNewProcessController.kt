@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.sut.graduate.entity.ProcessParameterValue
 import ru.sut.graduate.service.ProcessParameterService
 import ru.sut.graduate.service.TransitionService
 import ru.sut.graduate.service.WorkflowService
@@ -35,25 +34,11 @@ class StartNewProcessController(
     private fun getNewProcessContext(request: StartNewProcessRequest): NewProcessContext {
         val workflow = workflowService.findById(request.workflowId)
         val initialTransition = transitionService.findById(request.initialTransitionId)
-        val processParameterValues = request.processContext.map { (name, value) ->
-            convertToProcessParameterValue(name, value)
-        }
         return NewProcessContext(
             request.name,
             workflow,
             initialTransition,
-            processParameterValues
-        )
-    }
-
-    private fun convertToProcessParameterValue(
-        parameterName: String,
-        parameterValue: String
-    ): ProcessParameterValue {
-        val processParameter = processParameterService.findByName(parameterName)
-        return ProcessParameterValue(
-            processParameter = processParameter,
-            value = parameterValue
+            request.processContext
         )
     }
 

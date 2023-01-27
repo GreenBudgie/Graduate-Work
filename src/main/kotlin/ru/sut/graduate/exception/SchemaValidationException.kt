@@ -7,16 +7,23 @@ class SchemaValidationException(
 ) : Exception() {
 
     override val message: String
-        get() = "Схема не прошла проверку; ${getExtraParametersInfo()}; ${getMissingParametersInfo()}"
+        get() {
+            var msg = "Схема не прошла проверку"
+            getExtraParametersInfo()?.let { msg += "; $it" }
+            getMissingParametersInfo()?.let { msg += "; $it" }
+            return msg
+        }
 
-    private fun getExtraParametersInfo(): String {
+    private fun getExtraParametersInfo(): String? {
         val extra = provided - required
-        val info = extra.joinToString(",")
+        if(extra.isEmpty()) return null
+        val info = extra.joinToString(", ")
         return "Лишние параметры: $info"
     }
 
-    private fun getMissingParametersInfo(): String {
+    private fun getMissingParametersInfo(): String? {
         val missing = required - provided
+        if(missing.isEmpty()) return null
         val info = missing.joinToString(",")
         return "Отсутствующие параметры: $info"
     }
