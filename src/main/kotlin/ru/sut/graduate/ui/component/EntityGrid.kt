@@ -45,7 +45,7 @@ class EntityGrid<T : GenericEntity>(
         val fieldBinder = editor.binder.forField(dropdown)
         fieldBinder.bind(
             { EntityDropdown.DropdownEntry(entityProperty.get(it)) },
-            { entity, entry -> entityProperty.set(entity, entry.entity) }
+            { entity, entry -> entityProperty.set(entity, entry?.entity) }
         )
 
         val column = addColumn {

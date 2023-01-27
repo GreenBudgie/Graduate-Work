@@ -92,7 +92,7 @@ class TransitionView(
         grid.addEditableColumn(Transition::name)
             .setHeader("Наименование")
             .setFlexGrow(0)
-            .setWidth("25%")
+            .setWidth("20%")
             .isSortable = true
         grid.addDropdownEditableColumn(
             Transition::fromStage,

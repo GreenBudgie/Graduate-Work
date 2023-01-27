@@ -14,24 +14,9 @@ class TransitionService : GenericService<Transition, TransitionRepository>() {
             Transition::name,
             "Переход с таким названием уже существует"
         )
-        val existingTransitions = findAllButThis(entity)
-        val sameStagesAndParametersExist = existingTransitions.any {
-            hasSameStages(entity, it) && hasSameParameters(entity, it)
+        if(entity.toStage == null) {
+            throw EntityValidationException("Укажите конечное состояние")
         }
-        if(sameStagesAndParametersExist) {
-            throw EntityValidationException(
-                "Переход с такими состояниями и набором параметров заявки уже существует"
-            )
-        }
-    }
-
-    private fun hasSameStages(transition: Transition, other: Transition): Boolean {
-        return transition.fromStage?.id == transition.fromStage?.id
-                && transition.toStage?.id == transition.toStage?.id
-    }
-
-    private fun hasSameParameters(transition: Transition, other: Transition): Boolean {
-        return transition.parameters == other.parameters
     }
 
 }
