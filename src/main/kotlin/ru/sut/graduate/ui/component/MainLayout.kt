@@ -6,10 +6,7 @@ import com.vaadin.flow.component.html.H1
 import com.vaadin.flow.component.tabs.Tab
 import com.vaadin.flow.component.tabs.Tabs
 import com.vaadin.flow.router.RouterLink
-import ru.sut.graduate.ui.view.ProcessParameterView
-import ru.sut.graduate.ui.view.ProcessView
-import ru.sut.graduate.ui.view.StageView
-import ru.sut.graduate.ui.view.TransitionView
+import ru.sut.graduate.ui.view.*
 
 
 class MainLayout : AppLayout() {
@@ -27,7 +24,7 @@ class MainLayout : AppLayout() {
         tabs.add(Tab(RouterLink("Состояния", StageView::class.java)))
         tabs.add(Tab(RouterLink("Параметры заявок", ProcessParameterView::class.java)))
         tabs.add(Tab(RouterLink("Переходы", TransitionView::class.java)))
-        tabs.add(Tab(RouterLink("Маршруты", StageView::class.java)))
+        tabs.add(Tab(RouterLink("Маршруты", WorkflowView::class.java)))
         tabs.add(Tab(RouterLink("Заявки", ProcessView::class.java)))
         tabs.orientation = Tabs.Orientation.VERTICAL
 

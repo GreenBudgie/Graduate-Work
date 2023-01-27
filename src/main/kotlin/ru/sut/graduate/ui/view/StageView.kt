@@ -32,41 +32,31 @@ class StageView(
     private fun addForm() {
         val nameInput = TextField()
         nameInput.placeholder = "Наименование"
-        nameInput.width = "35%"
-        val descriptionInput = TextField()
-        descriptionInput.placeholder = "Описание"
-        descriptionInput.width = "50%"
+        nameInput.width = "80%"
         val addStageButton = Button("Добавить", Icon(VaadinIcon.PLUS))
-        addStageButton.width = "15%"
+        addStageButton.width = "20%"
         addStageButton.minWidth = "200px"
         addStageButton.addClickListener {
             if(nameInput.value.isBlank()) {
                 ClosableNotification.error("Укажите наименование состояния")
                 return@addClickListener
             }
-            val stage = Stage(
-                name = nameInput.value,
-                description = descriptionInput.value
-            )
+            val stage = Stage(name = nameInput.value)
             stageService.saveOnUI(stage)
             nameInput.clear()
-            descriptionInput.clear()
             grid.loadItems()
         }
-        val layout = HorizontalLayout(nameInput, descriptionInput, addStageButton)
+        val layout = HorizontalLayout(nameInput, addStageButton)
+        layout.width = "70%"
         layout.setWidthFull()
         layout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
         add(layout)
     }
 
     private fun addGrid() {
-        grid.addEditableColumn(Stage::name, true)
+        grid.addEditableColumn(Stage::name)
             .setHeader("Наименование")
-            .setFlexGrow(0)
             .setAutoWidth(true)
-            .isSortable = true
-        grid.addEditableColumn(Stage::description)
-            .setHeader("Описание")
             .isSortable = true
         grid.addEditAction()
         grid.addDeleteAction()

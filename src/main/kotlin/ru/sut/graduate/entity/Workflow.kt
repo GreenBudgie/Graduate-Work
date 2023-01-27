@@ -8,8 +8,6 @@ class Workflow(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long? = null,
     var name: String? = null,
-    var description: String? = null,
-    var areaName: String? = null,
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     var transitions: Set<Transition> = emptySet()
 ) : GenericEntity()

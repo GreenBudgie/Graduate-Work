@@ -65,8 +65,8 @@ class TransitionView(
             }
             val transition = Transition(
                 name = nameInput.value,
-                fromStage = fromStageDropdown.value,
-                toStage = toStageDropdown.value,
+                fromStage = fromStageDropdown.entity,
+                toStage = toStageDropdown.entity,
                 parameters = parametersDropdown.value
             )
             transitionService.saveOnUI(transition)
@@ -89,7 +89,7 @@ class TransitionView(
     }
 
     private fun addGrid() {
-        grid.addEditableColumn(Transition::name, true)
+        grid.addEditableColumn(Transition::name)
             .setHeader("Наименование")
             .setFlexGrow(0)
             .setWidth("25%")

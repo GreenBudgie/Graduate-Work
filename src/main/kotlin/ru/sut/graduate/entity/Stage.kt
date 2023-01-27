@@ -11,5 +11,4 @@ class Stage(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long? = null,
     var name: String? = null,
-    var description: String? = null,
 ) : GenericEntity()

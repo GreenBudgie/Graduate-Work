@@ -43,8 +43,10 @@ class EntityGrid<T : GenericEntity>(
     ): Column<T> {
         dropdown.setWidthFull()
         val fieldBinder = editor.binder.forField(dropdown)
-        fieldBinder.asRequired()
-        fieldBinder.bind(entityProperty.getter, entityProperty.setter)
+        fieldBinder.bind(
+            { EntityDropdown.DropdownEntry(entityProperty.get(it)) },
+            { entity, entry -> entityProperty.set(entity, entry.entity) }
+        )
 
         val column = addColumn {
             val entity = entityProperty.get(it) ?: return@addColumn ""
@@ -71,14 +73,10 @@ class EntityGrid<T : GenericEntity>(
         return column
     }
 
-    fun addEditableColumn(property: KMutableProperty1<T, String?>,
-                          required: Boolean = false): Column<T> {
+    fun addEditableColumn(property: KMutableProperty1<T, String?>): Column<T> {
         val field = TextField()
         field.setWidthFull()
         val fieldBinder = editor.binder.forField(field)
-        if(required) {
-            fieldBinder.asRequired()
-        }
         fieldBinder.bind(property.getter, property.setter)
 
         val column = addColumn(property.getter)

@@ -48,12 +48,13 @@ class ProcessParameterView(
         }
         val layout = HorizontalLayout(nameInput, addParameterButton)
         layout.width = "70%"
+        layout.setWidthFull()
         layout.justifyContentMode = FlexComponent.JustifyContentMode.BETWEEN
         add(layout)
     }
 
     private fun addGrid() {
-        grid.addEditableColumn(ProcessParameter::name, true)
+        grid.addEditableColumn(ProcessParameter::name)
             .setHeader("Наименование")
             .isSortable = true
         grid.addEditAction()
