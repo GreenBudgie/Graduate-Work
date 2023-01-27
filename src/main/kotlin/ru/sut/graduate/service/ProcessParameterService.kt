@@ -15,4 +15,8 @@ class ProcessParameterService : GenericService<ProcessParameter, ProcessParamete
         )
     }
 
+    fun findByName(name: String): ProcessParameter {
+        return repository.findByName(name)
+    }
+
 }

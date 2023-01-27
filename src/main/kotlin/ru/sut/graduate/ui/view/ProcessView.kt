@@ -6,9 +6,9 @@ import com.vaadin.flow.router.Route
 import ru.sut.graduate.entity.Process
 import ru.sut.graduate.entity.Stage
 import ru.sut.graduate.entity.Workflow
-import ru.sut.graduate.service.ProcessService
 import ru.sut.graduate.service.StageService
 import ru.sut.graduate.service.WorkflowService
+import ru.sut.graduate.service.process.ProcessService
 import ru.sut.graduate.ui.component.EntityDropdown
 import ru.sut.graduate.ui.component.EntityGrid
 import ru.sut.graduate.ui.component.MainLayout
@@ -29,6 +29,9 @@ class ProcessView(
     }
 
     private fun addGrid() {
+        grid.addEditableColumn(Process::name)
+            .setHeader("Наименование")
+            .isSortable = true
         grid.addDropdownEditableColumn(
             Process::stage,
             EntityDropdown(Stage::name, stageService)
@@ -41,6 +44,7 @@ class ProcessView(
         )
             .setHeader("Маршрут")
             .isSortable = true
+        grid.loadItems()
         add(grid)
     }
 
