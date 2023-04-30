@@ -9,12 +9,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import ru.sut.graduate.entity.Schema
-import ru.sut.graduate.entity.Stage
-import ru.sut.graduate.entity.Transition
-import ru.sut.graduate.service.SchemaService
-import ru.sut.graduate.service.StageService
-import ru.sut.graduate.service.TransitionService
 import ru.sut.graduate.ui.component.*
 
 @Route(value = "transitions", layout = MainLayout::class)

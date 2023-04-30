@@ -9,10 +9,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import ru.sut.graduate.entity.ProcessParameter
-import ru.sut.graduate.entity.Schema
-import ru.sut.graduate.service.ProcessParameterService
-import ru.sut.graduate.service.SchemaService
 import ru.sut.graduate.ui.component.*
 
 @Route(value = "schemas", layout = MainLayout::class)
