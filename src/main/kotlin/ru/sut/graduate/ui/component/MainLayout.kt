@@ -6,7 +6,8 @@ import com.vaadin.flow.component.html.H1
 import com.vaadin.flow.component.tabs.Tab
 import com.vaadin.flow.component.tabs.Tabs
 import com.vaadin.flow.router.RouterLink
-import ru.sut.graduate.ui.view.*
+import ru.sut.graduate.ui.view.AddSoftwareView
+import ru.sut.graduate.ui.view.SoftwareView
 
 
 class MainLayout : AppLayout() {
@@ -16,17 +17,13 @@ class MainLayout : AppLayout() {
     init {
         val toggle = DrawerToggle()
 
-        val title = H1("Система управления потоками")
+        val title = H1("База данных ПО")
         title.style
             .set("font-size", "var(--lumo-font-size-l)")
             .set("margin", "var(--lumo-space-m)")
 
-        tabs.add(Tab(RouterLink("Состояния", StageView::class.java)))
-        tabs.add(Tab(RouterLink("Параметры заявок", ProcessParameterView::class.java)))
-        tabs.add(Tab(RouterLink("Схемы данных", SchemaView::class.java)))
-        tabs.add(Tab(RouterLink("Переходы", TransitionView::class.java)))
-        tabs.add(Tab(RouterLink("Маршруты", WorkflowView::class.java)))
-        tabs.add(Tab(RouterLink("Заявки", ProcessView::class.java)))
+        tabs.add(Tab(RouterLink("Список ПО", SoftwareView::class.java)))
+        tabs.add(Tab(RouterLink("Добавить ПО", AddSoftwareView::class.java)))
         tabs.orientation = Tabs.Orientation.VERTICAL
 
         addToNavbar(toggle, title)

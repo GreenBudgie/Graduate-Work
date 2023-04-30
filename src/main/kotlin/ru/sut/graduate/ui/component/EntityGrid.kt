@@ -3,18 +3,18 @@ package ru.sut.graduate.ui.component
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.grid.Grid
-import com.vaadin.flow.component.grid.GridSortOrder
 import com.vaadin.flow.component.icon.Icon
 import com.vaadin.flow.component.icon.VaadinIcon
 import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
-import com.vaadin.flow.data.provider.SortDirection
 import com.vaadin.flow.function.SerializableFunction
 import com.vaadin.flow.function.ValueProvider
 import ru.sut.graduate.entity.GenericEntity
 import ru.sut.graduate.service.GenericService
+import ru.sut.graduate.vo.BooleanEnum
+import ru.sut.graduate.vo.LocalizableEnum
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 
@@ -30,50 +30,48 @@ class EntityGrid<T : GenericEntity>(
 
     init {
         editor.binder = Binder(entityClass.java)
-        addIDColumn()
         editor.addSaveListener {
             service.saveOnUI(it.item)
             loadItems()
         }
     }
 
-    fun <D : GenericEntity> addDropdownEditableColumn(
-        entityProperty: KMutableProperty1<T, D?>,
-        dropdown: EntityDropdown<D>
-    ): Column<T> {
+    inline fun <reified E> addEnumEditableColumn(
+        property: KMutableProperty1<T, E?>
+    ) : Column<T> where E : Enum<*>, E : LocalizableEnum {
+        val dropdown = EnumDropdown(E::class)
         dropdown.setWidthFull()
         val fieldBinder = editor.binder.forField(dropdown)
         fieldBinder.bind(
-            { EntityDropdown.DropdownEntry(entityProperty.get(it)) },
-            { entity, entry -> entityProperty.set(entity, entry?.entity) }
+            { EnumDropdown.DropdownEntry(property.get(it)) },
+            { entity, entry -> property.set(entity, entry?.enumConstant) }
         )
 
         val column = addColumn {
-            val entity = entityProperty.get(it) ?: return@addColumn ""
-            dropdown.displayFieldGetter(entity).toString()
+            property.get(it)?.getLocalizedName() ?: ""
         }
         column.editorComponent = dropdown
         return column
     }
 
-    fun <D : GenericEntity> addMultiDropdownEditableColumn(
-        entityProperty: KMutableProperty1<T, Set<D>>,
-        dropdown: EntityMultiDropdown<D>
-    ): Column<T> {
+    inline fun <reified E> addMultiEnumEditableColumn(
+        property: KMutableProperty1<T, Set<E>>
+    ) : Column<T> where E : Enum<*>, E : LocalizableEnum {
+        val dropdown = EnumMultiDropdown(E::class)
         dropdown.setWidthFull()
         val fieldBinder = editor.binder.forField(dropdown)
-        fieldBinder.bind(entityProperty.getter, entityProperty.setter)
+        fieldBinder.bind(property.getter, property.setter)
 
         val column = addColumn {
-            val entities = entityProperty.get(it)
-            val displayProperties = entities.mapNotNull { entity -> dropdown.displayFieldGetter(entity) }
+            val enumConstants = property.get(it)
+            val displayProperties = enumConstants.map(LocalizableEnum::getLocalizedName)
             displayProperties.joinToString(", ")
         }
         column.editorComponent = dropdown
         return column
     }
 
-    fun addEditableColumn(property: KMutableProperty1<T, String?>): Column<T> {
+    fun addStringEditableColumn(property: KMutableProperty1<T, String?>): Column<T> {
         val field = TextField()
         field.setWidthFull()
         val fieldBinder = editor.binder.forField(field)
@@ -84,10 +82,44 @@ class EntityGrid<T : GenericEntity>(
         return column
     }
 
+    fun addIntEditableColumn(property: KMutableProperty1<T, Int?>): Column<T> {
+        val field = TextField()
+        field.setWidthFull()
+        val fieldBinder = editor.binder.forField(field)
+        fieldBinder.bind(
+            { property.get(it).toString() },
+            { _, value -> value.toInt() }
+        )
+
+        val column = addColumn(property.getter)
+        column.editorComponent = field
+        return column
+    }
+
+    fun addBooleanEditableColumn(property: KMutableProperty1<T, Boolean?>): Column<T> {
+        val dropdown = EnumDropdown(BooleanEnum::class)
+        dropdown.setWidthFull()
+        val fieldBinder = editor.binder.forField(dropdown)
+        fieldBinder.bind(
+            {
+                val booleanValue = property.get(it) ?: return@bind null
+                EnumDropdown.DropdownEntry(BooleanEnum.from(booleanValue))
+            },
+            { entity, entry -> property.set(entity, entry?.enumConstant?.toBoolean()) }
+        )
+
+        val column = addColumn {
+            val booleanValue = property.get(it) ?: return@addColumn ""
+            BooleanEnum.from(booleanValue)
+        }
+        column.editorComponent = dropdown
+        return column
+    }
+
     override fun addColumn(valueProvider: ValueProvider<T, *>): Column<T> {
         val column = super.addColumn(valueProvider)
         column.tooltipGenerator = SerializableFunction {
-            val text = valueProvider.apply(it).toString()
+            val text = valueProvider.apply(it)?.toString() ?: ""
             if(text.length < maxTextLengthWithNoTooltip) {
                 return@SerializableFunction null
             }
@@ -170,17 +202,6 @@ class EntityGrid<T : GenericEntity>(
     fun loadItems() {
         setItems(service.findAll())
         recalculateColumnWidths()
-    }
-
-    private fun addIDColumn() {
-        val idColumn = addColumn(GenericEntity::id)
-        idColumn.setHeader("ID")
-        idColumn.flexGrow = 0
-        idColumn.isAutoWidth = true
-        idColumn.isSortable = true
-        this.sort(listOf(
-            GridSortOrder(idColumn, SortDirection.ASCENDING)
-        ))
     }
 
 }
