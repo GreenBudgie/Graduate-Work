@@ -2,6 +2,7 @@ package ru.sut.graduate.ui.view
 
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.html.Paragraph
 import com.vaadin.flow.component.icon.Icon
 import com.vaadin.flow.component.icon.VaadinIcon
@@ -14,22 +15,30 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import ru.sut.graduate.entity.Software
 import ru.sut.graduate.service.SoftwareService
-import ru.sut.graduate.ui.component.ClosableNotification
-import ru.sut.graduate.ui.component.EnumDropdown
-import ru.sut.graduate.ui.component.EnumMultiDropdown
-import ru.sut.graduate.ui.component.MainLayout
+import ru.sut.graduate.ui.component.*
 import ru.sut.graduate.vo.AuthType
 import ru.sut.graduate.vo.BooleanEnum
 import ru.sut.graduate.vo.Browser
 import ru.sut.graduate.vo.OS
 
-@Route(value = "addSoftware", layout = MainLayout::class)
-@PageTitle("Добавить ПО")
-class AddSoftwareView(
+@Route(value = "findSoftware", layout = MainLayout::class)
+@PageTitle("Найти ПО")
+class FindSoftwareView(
     private val softwareService: SoftwareService
 ) : VerticalLayout() {
 
+    private val resultGrid = EntityGrid(Software::class, softwareService).apply { isVisible = false }
+    private val noResultsLabel = Label("ПО с заданными параметрами не найдено").apply { isVisible = false }
+
     init {
+        resultGrid.addColumn(Software::name)
+            .setHeader("Наименование")
+            .isSortable = true
+        resultGrid.addColumn(Software::price)
+            .setHeader("Цена")
+            .isSortable = true
+        resultGrid.width = "50%"
+
         val nameInput = TextField()
         nameInput.placeholder = "Наименование"
         nameInput.width = "50%"
@@ -81,14 +90,10 @@ class AddSoftwareView(
         priceInput.width = "25%"
         priceInput.min = 0
 
-        val addSoftwareButton = Button("Добавить", Icon(VaadinIcon.PLUS))
-        addSoftwareButton.width = "20%"
-        addSoftwareButton.minWidth = "200px"
-        addSoftwareButton.addClickListener {
-            if(nameInput.value.isBlank()) {
-                ClosableNotification.error("Укажите наименование ПО")
-                return@addClickListener
-            }
+        val findSoftwareButton = Button("Найти", Icon(VaadinIcon.SEARCH))
+        findSoftwareButton.width = "20%"
+        findSoftwareButton.minWidth = "200px"
+        findSoftwareButton.addClickListener {
             val software = Software(
                 name = nameInput.optionalValue.orElse(null),
                 segments = segmentsInput.value,
@@ -102,7 +107,20 @@ class AddSoftwareView(
                 supportsDocker = supportsDockerDropdown.value?.enumConstant?.toBoolean(),
                 price = priceInput.value
             )
-            softwareService.saveOnUI(software)
+            val results = softwareService.findByExampleSoftware(software)
+            if(results.isEmpty()) {
+                showNoResults()
+            } else {
+                showResultGrid(results)
+            }
+        }
+
+        val clearButton = Button("Очистить", Icon(VaadinIcon.ERASER))
+        clearButton.width = "20%"
+        clearButton.minWidth = "200px"
+        clearButton.addClickListener {
+            resultGrid.isVisible = false
+            noResultsLabel.isVisible = false
             nameInput.clear()
             segmentsInput.clear()
             hostsInput.clear()
@@ -116,6 +134,7 @@ class AddSoftwareView(
             priceInput.clear()
         }
 
+
         add(
             VerticalLayout(
                 layout(nameInput, priceInput).apply { width = "80%" },
@@ -123,9 +142,23 @@ class AddSoftwareView(
                 layout(supportsMobileDropdown, supportsDockerDropdown).apply { width = "80%" },
                 layout(segmentsInput, hostsInput),
                 layout(trustFactorInput, keyLengthInput),
-                HorizontalLayout(addSoftwareButton),
+                HorizontalLayout(findSoftwareButton, clearButton),
+                resultGrid,
+                noResultsLabel
             )
         )
+    }
+
+    private fun showResultGrid(softwareList: List<Software>) {
+        resultGrid.isVisible = true
+        noResultsLabel.isVisible = false
+        resultGrid.setItems(softwareList)
+        resultGrid.recalculateColumnWidths()
+    }
+
+    private fun showNoResults() {
+        resultGrid.isVisible = false
+        noResultsLabel.isVisible = true
     }
 
     private fun layout(vararg components: Component): HorizontalLayout {

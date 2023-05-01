@@ -7,6 +7,7 @@ import com.vaadin.flow.component.icon.Icon
 import com.vaadin.flow.component.icon.VaadinIcon
 import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
+import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.function.SerializableFunction
@@ -37,10 +38,9 @@ class EntityGrid<T : GenericEntity>(
     }
 
     inline fun <reified E> addEnumEditableColumn(
-        property: KMutableProperty1<T, E?>
+        property: KMutableProperty1<T, E?>,
+        dropdown: EnumDropdown<E> = EnumDropdown(E::class).apply { setWidthFull() }
     ) : Column<T> where E : Enum<*>, E : LocalizableEnum {
-        val dropdown = EnumDropdown(E::class)
-        dropdown.setWidthFull()
         val fieldBinder = editor.binder.forField(dropdown)
         fieldBinder.bind(
             { EnumDropdown.DropdownEntry(property.get(it)) },
@@ -55,10 +55,9 @@ class EntityGrid<T : GenericEntity>(
     }
 
     inline fun <reified E> addMultiEnumEditableColumn(
-        property: KMutableProperty1<T, Set<E>>
+        property: KMutableProperty1<T, Set<E>>,
+        dropdown: EnumMultiDropdown<E> = EnumMultiDropdown(E::class).apply { setWidthFull() }
     ) : Column<T> where E : Enum<*>, E : LocalizableEnum {
-        val dropdown = EnumMultiDropdown(E::class)
-        dropdown.setWidthFull()
         val fieldBinder = editor.binder.forField(dropdown)
         fieldBinder.bind(property.getter, property.setter)
 
@@ -71,9 +70,10 @@ class EntityGrid<T : GenericEntity>(
         return column
     }
 
-    fun addStringEditableColumn(property: KMutableProperty1<T, String?>): Column<T> {
-        val field = TextField()
-        field.setWidthFull()
+    fun addStringEditableColumn(
+        property: KMutableProperty1<T, String?>,
+        field: TextField = TextField().apply { setWidthFull() }
+    ): Column<T> {
         val fieldBinder = editor.binder.forField(field)
         fieldBinder.bind(property.getter, property.setter)
 
@@ -82,13 +82,14 @@ class EntityGrid<T : GenericEntity>(
         return column
     }
 
-    fun addIntEditableColumn(property: KMutableProperty1<T, Int?>): Column<T> {
-        val field = TextField()
-        field.setWidthFull()
+    fun addIntEditableColumn(
+        property: KMutableProperty1<T, Int?>,
+        field: IntegerField = IntegerField().apply { setWidthFull() }
+    ): Column<T> {
         val fieldBinder = editor.binder.forField(field)
         fieldBinder.bind(
-            { property.get(it).toString() },
-            { _, value -> value.toInt() }
+            { property.get(it) },
+            { entity, value -> property.set(entity, value) }
         )
 
         val column = addColumn(property.getter)
@@ -96,9 +97,10 @@ class EntityGrid<T : GenericEntity>(
         return column
     }
 
-    fun addBooleanEditableColumn(property: KMutableProperty1<T, Boolean?>): Column<T> {
-        val dropdown = EnumDropdown(BooleanEnum::class)
-        dropdown.setWidthFull()
+    fun addBooleanEditableColumn(
+        property: KMutableProperty1<T, Boolean?>,
+        dropdown: EnumDropdown<BooleanEnum> = EnumDropdown(BooleanEnum::class).apply { setWidthFull() }
+    ): Column<T> {
         val fieldBinder = editor.binder.forField(dropdown)
         fieldBinder.bind(
             {
@@ -110,7 +112,7 @@ class EntityGrid<T : GenericEntity>(
 
         val column = addColumn {
             val booleanValue = property.get(it) ?: return@addColumn ""
-            BooleanEnum.from(booleanValue)
+            BooleanEnum.from(booleanValue).getLocalizedName()
         }
         column.editorComponent = dropdown
         return column

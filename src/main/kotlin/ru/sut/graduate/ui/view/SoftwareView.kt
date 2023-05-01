@@ -56,6 +56,7 @@ class SoftwareView(
         grid.addEditAction()
         grid.addDeleteAction()
         grid.loadItems()
+        grid.width = "300%"
         add(grid)
     }
 

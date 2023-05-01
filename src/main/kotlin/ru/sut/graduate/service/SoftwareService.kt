@@ -1,12 +1,24 @@
 package ru.sut.graduate.service
 
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.ExampleMatcher
 import org.springframework.stereotype.Service
 import ru.sut.graduate.entity.Software
 import ru.sut.graduate.exception.EntityValidationException
 import ru.sut.graduate.repository.SoftwareRepository
 
+
 @Service
 class SoftwareService : GenericService<Software, SoftwareRepository>() {
+
+    fun findByExampleSoftware(example: Software): List<Software> {
+        val matcher = ExampleMatcher.matching().withIgnoreNullValues()
+        val exampleQuery = Example.of(example, matcher)
+        val result = repository.findAll(exampleQuery)
+        return result
+            .filter { it.supportedOS.containsAll(example.supportedOS) }
+            .filter { it.supportedBrowsers.containsAll(example.supportedBrowsers) }
+    }
 
     override fun validate(entity: Software) = with(entity) {
         validateFieldUniqueness(entity, Software::name, "ПО с таким названием уже существует")
