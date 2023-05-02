@@ -3,54 +3,54 @@ package ru.sut.graduate.ui.view
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import ru.sut.graduate.entity.Software
-import ru.sut.graduate.service.SoftwareService
+import ru.sut.graduate.entity.AuthSystem
+import ru.sut.graduate.service.AuthSystemService
 import ru.sut.graduate.ui.component.EntityGrid
 import ru.sut.graduate.ui.component.MainLayout
 
 @Route(value = "", layout = MainLayout::class)
-@PageTitle("Список ПО")
-class SoftwareView(
-    private val softwareService: SoftwareService
+@PageTitle("Список систем аутентификации")
+class AuthSystemView(
+    private val authSystemService: AuthSystemService
 ) : VerticalLayout() {
 
-    private val grid = EntityGrid(Software::class, softwareService)
+    private val grid = EntityGrid(AuthSystem::class, authSystemService)
 
     init {
-        grid.addStringEditableColumn(Software::name)
+        grid.addStringEditableColumn(AuthSystem::name)
             .setHeader("Наименование")
             .isSortable = true
-        grid.addIntEditableColumn(Software::segments)
+        grid.addIntEditableColumn(AuthSystem::segments)
             .setHeader("Кол-во сегментов")
             .isSortable = true
-        grid.addIntEditableColumn(Software::hosts)
+        grid.addIntEditableColumn(AuthSystem::hosts)
             .setHeader("Кол-во хостов в сегменте")
             .isSortable = true
-        grid.addMultiEnumEditableColumn(Software::supportedOS)
+        grid.addMultiEnumEditableColumn(AuthSystem::supportedOS)
             .setHeader("Поддерживаемые ОС")
             .isSortable = true
-        grid.addEnumEditableColumn(Software::authType)
+        grid.addEnumEditableColumn(AuthSystem::authType)
             .setHeader("Тип аутентификации")
             .isSortable = true
-        grid.addIntEditableColumn(Software::trustFactor)
+        grid.addIntEditableColumn(AuthSystem::trustFactor)
             .setHeader("Уровень доверия")
             .isSortable = true
-        grid.addIntEditableColumn(Software::keyLength)
+        grid.addIntEditableColumn(AuthSystem::keyLength)
             .setHeader("Длина ключа")
             .isSortable = true
-        grid.addMultiEnumEditableColumn(Software::supportedBrowsers)
+        grid.addMultiEnumEditableColumn(AuthSystem::supportedBrowsers)
             .setHeader("Поддерживаемые браузеры")
             .isSortable = true
-        grid.addIntEditableColumn(Software::keyLength)
+        grid.addIntEditableColumn(AuthSystem::keyLength)
             .setHeader("Длина ключа")
             .isSortable = true
-        grid.addBooleanEditableColumn(Software::supportsMobile)
+        grid.addBooleanEditableColumn(AuthSystem::supportsMobile)
             .setHeader("Поддержка мобильных устройств")
             .isSortable = true
-        grid.addBooleanEditableColumn(Software::supportsDocker)
+        grid.addBooleanEditableColumn(AuthSystem::supportsDocker)
             .setHeader("Поддержка Docker")
             .isSortable = true
-        grid.addIntEditableColumn(Software::price)
+        grid.addIntEditableColumn(AuthSystem::price)
             .setHeader("Цена")
             .isSortable = true
         grid.addEditAction()

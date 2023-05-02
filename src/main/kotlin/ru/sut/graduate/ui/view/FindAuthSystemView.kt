@@ -13,28 +13,28 @@ import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import ru.sut.graduate.entity.Software
-import ru.sut.graduate.service.SoftwareService
+import ru.sut.graduate.entity.AuthSystem
+import ru.sut.graduate.service.AuthSystemService
 import ru.sut.graduate.ui.component.*
 import ru.sut.graduate.vo.AuthType
 import ru.sut.graduate.vo.BooleanEnum
 import ru.sut.graduate.vo.Browser
 import ru.sut.graduate.vo.OS
 
-@Route(value = "findSoftware", layout = MainLayout::class)
-@PageTitle("Найти ПО")
-class FindSoftwareView(
-    private val softwareService: SoftwareService
+@Route(value = "findAuthSystem", layout = MainLayout::class)
+@PageTitle("Найти систему аутентификации")
+class FindAuthSystemView(
+    private val authSystemService: AuthSystemService
 ) : VerticalLayout() {
 
-    private val resultGrid = EntityGrid(Software::class, softwareService).apply { isVisible = false }
-    private val noResultsLabel = Label("ПО с заданными параметрами не найдено").apply { isVisible = false }
+    private val resultGrid = EntityGrid(AuthSystem::class, authSystemService).apply { isVisible = false }
+    private val noResultsLabel = Label("Система аутентификации с заданными параметрами не найдена").apply { isVisible = false }
 
     init {
-        resultGrid.addColumn(Software::name)
+        resultGrid.addColumn(AuthSystem::name)
             .setHeader("Наименование")
             .isSortable = true
-        resultGrid.addColumn(Software::price)
+        resultGrid.addColumn(AuthSystem::price)
             .setHeader("Цена")
             .isSortable = true
         resultGrid.width = "50%"
@@ -94,7 +94,7 @@ class FindSoftwareView(
         findSoftwareButton.width = "20%"
         findSoftwareButton.minWidth = "200px"
         findSoftwareButton.addClickListener {
-            val software = Software(
+            val authSystem = AuthSystem(
                 name = nameInput.optionalValue.orElse(null),
                 segments = segmentsInput.value,
                 hosts = hostsInput.value,
@@ -107,7 +107,7 @@ class FindSoftwareView(
                 supportsDocker = supportsDockerDropdown.value?.enumConstant?.toBoolean(),
                 price = priceInput.value
             )
-            val results = softwareService.findByExampleSoftware(software)
+            val results = authSystemService.findByExampleSoftware(authSystem)
             if(results.isEmpty()) {
                 showNoResults()
             } else {
@@ -149,10 +149,10 @@ class FindSoftwareView(
         )
     }
 
-    private fun showResultGrid(softwareList: List<Software>) {
+    private fun showResultGrid(authSystemList: List<AuthSystem>) {
         resultGrid.isVisible = true
         noResultsLabel.isVisible = false
-        resultGrid.setItems(softwareList)
+        resultGrid.setItems(authSystemList)
         resultGrid.recalculateColumnWidths()
     }
 

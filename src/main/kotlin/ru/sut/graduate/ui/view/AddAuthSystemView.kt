@@ -12,8 +12,8 @@ import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import ru.sut.graduate.entity.Software
-import ru.sut.graduate.service.SoftwareService
+import ru.sut.graduate.entity.AuthSystem
+import ru.sut.graduate.service.AuthSystemService
 import ru.sut.graduate.ui.component.ClosableNotification
 import ru.sut.graduate.ui.component.EnumDropdown
 import ru.sut.graduate.ui.component.EnumMultiDropdown
@@ -23,10 +23,10 @@ import ru.sut.graduate.vo.BooleanEnum
 import ru.sut.graduate.vo.Browser
 import ru.sut.graduate.vo.OS
 
-@Route(value = "addSoftware", layout = MainLayout::class)
-@PageTitle("Добавить ПО")
-class AddSoftwareView(
-    private val softwareService: SoftwareService
+@Route(value = "addAuthSystem", layout = MainLayout::class)
+@PageTitle("Добавить систему аутентификации")
+class AddAuthSystemView(
+    private val authSystemService: AuthSystemService
 ) : VerticalLayout() {
 
     init {
@@ -89,7 +89,7 @@ class AddSoftwareView(
                 ClosableNotification.error("Укажите наименование ПО")
                 return@addClickListener
             }
-            val software = Software(
+            val authSystem = AuthSystem(
                 name = nameInput.optionalValue.orElse(null),
                 segments = segmentsInput.value,
                 hosts = hostsInput.value,
@@ -102,7 +102,7 @@ class AddSoftwareView(
                 supportsDocker = supportsDockerDropdown.value?.enumConstant?.toBoolean(),
                 price = priceInput.value
             )
-            softwareService.saveOnUI(software)
+            authSystemService.saveOnUI(authSystem)
             nameInput.clear()
             segmentsInput.clear()
             hostsInput.clear()

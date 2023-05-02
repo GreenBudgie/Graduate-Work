@@ -6,7 +6,7 @@ import ru.sut.graduate.vo.OS
 import javax.persistence.*
 
 @Entity
-class Software(
+class AuthSystem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long? = null,

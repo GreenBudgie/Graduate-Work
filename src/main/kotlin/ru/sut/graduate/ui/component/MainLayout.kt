@@ -6,10 +6,11 @@ import com.vaadin.flow.component.html.H1
 import com.vaadin.flow.component.tabs.Tab
 import com.vaadin.flow.component.tabs.Tabs
 import com.vaadin.flow.router.RouterLink
-import ru.sut.graduate.ui.view.AddSoftwareView
-import ru.sut.graduate.ui.view.FindSoftwareView
-import ru.sut.graduate.ui.view.SoftwareView
-
+import com.vaadin.flow.theme.Theme
+import com.vaadin.flow.theme.lumo.Lumo
+import ru.sut.graduate.ui.view.AddAuthSystemView
+import ru.sut.graduate.ui.view.FindAuthSystemView
+import ru.sut.graduate.ui.view.AuthSystemView
 
 class MainLayout : AppLayout() {
 
@@ -18,14 +19,14 @@ class MainLayout : AppLayout() {
     init {
         val toggle = DrawerToggle()
 
-        val title = H1("База данных ПО")
+        val title = H1("Системы аутентификации")
         title.style
             .set("font-size", "var(--lumo-font-size-l)")
             .set("margin", "var(--lumo-space-m)")
 
-        tabs.add(Tab(RouterLink("Список ПО", SoftwareView::class.java)))
-        tabs.add(Tab(RouterLink("Добавить ПО", AddSoftwareView::class.java)))
-        tabs.add(Tab(RouterLink("Найти ПО", FindSoftwareView::class.java)))
+        tabs.add(Tab(RouterLink("Список ПО", AuthSystemView::class.java)))
+        tabs.add(Tab(RouterLink("Добавить ПО", AddAuthSystemView::class.java)))
+        tabs.add(Tab(RouterLink("Найти ПО", FindAuthSystemView::class.java)))
         tabs.orientation = Tabs.Orientation.VERTICAL
 
         addToNavbar(toggle, title)
