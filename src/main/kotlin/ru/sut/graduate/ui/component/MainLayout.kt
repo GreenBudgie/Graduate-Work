@@ -24,9 +24,9 @@ class MainLayout : AppLayout() {
             .set("font-size", "var(--lumo-font-size-l)")
             .set("margin", "var(--lumo-space-m)")
 
-        tabs.add(Tab(RouterLink("Список ПО", AuthSystemView::class.java)))
-        tabs.add(Tab(RouterLink("Добавить ПО", AddAuthSystemView::class.java)))
-        tabs.add(Tab(RouterLink("Найти ПО", FindAuthSystemView::class.java)))
+        tabs.add(Tab(RouterLink("Список систем", AuthSystemView::class.java)))
+        tabs.add(Tab(RouterLink("Добавить систему", AddAuthSystemView::class.java)))
+        tabs.add(Tab(RouterLink("Найти систему", FindAuthSystemView::class.java)))
         tabs.orientation = Tabs.Orientation.VERTICAL
 
         addToNavbar(toggle, title)
