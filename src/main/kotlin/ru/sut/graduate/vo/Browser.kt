@@ -9,7 +9,8 @@ enum class Browser(
     EXPLORER("Internet Explorer"),
     EDGE("Microsoft Edge"),
     YANDEX("Yandex Browser"),
-    OPERA("Opera");
+    OPERA("Opera"),
+    SAFARI("Safari");
 
     override fun getLocalizedName() = l10nName
 

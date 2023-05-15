@@ -11,7 +11,9 @@ class AuthSystem(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     override var id: Long? = null,
     var name: String? = null,
+    //Количество доменов
     var segments: Int? = null,
+    //Количество пользователей
     var hosts: Int? = null,
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = OS::class, fetch = FetchType.EAGER)

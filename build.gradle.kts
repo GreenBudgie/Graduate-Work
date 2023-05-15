@@ -45,3 +45,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+vaadin {
+	productionMode = true
+}

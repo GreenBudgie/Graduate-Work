@@ -39,17 +39,13 @@ class FindAuthSystemView(
             .isSortable = true
         resultGrid.width = "50%"
 
-        val nameInput = TextField()
-        nameInput.placeholder = "Наименование"
-        nameInput.width = "50%"
-
         val segmentsInput = IntegerField()
-        segmentsInput.placeholder = "Количество сегментов"
+        segmentsInput.placeholder = "Количество доменов"
         segmentsInput.width = "25%"
         segmentsInput.min = 0
 
         val hostsInput = IntegerField()
-        hostsInput.placeholder = "Количество хостов в сегменте"
+        hostsInput.placeholder = "Количество пользователей"
         hostsInput.width = "25%"
         hostsInput.min = 0
 
@@ -59,7 +55,7 @@ class FindAuthSystemView(
 
         val authTypeDropdown = EnumDropdown(AuthType::class)
         authTypeDropdown.placeholder = "Тип аутентификации"
-        authTypeDropdown.width = "25%"
+        authTypeDropdown.width = "50%"
 
         val trustFactorInput = IntegerField()
         trustFactorInput.placeholder = "Уровень доверия"
@@ -95,7 +91,7 @@ class FindAuthSystemView(
         findSoftwareButton.minWidth = "200px"
         findSoftwareButton.addClickListener {
             val authSystem = AuthSystem(
-                name = nameInput.optionalValue.orElse(null),
+                name = null,
                 segments = segmentsInput.value,
                 hosts = hostsInput.value,
                 supportedOS = supportedOSDropdown.value,
@@ -121,7 +117,6 @@ class FindAuthSystemView(
         clearButton.addClickListener {
             resultGrid.isVisible = false
             noResultsLabel.isVisible = false
-            nameInput.clear()
             segmentsInput.clear()
             hostsInput.clear()
             supportedOSDropdown.clear()
@@ -137,11 +132,16 @@ class FindAuthSystemView(
 
         add(
             VerticalLayout(
-                layout(nameInput, priceInput).apply { width = "80%" },
-                layout(supportedOSDropdown, supportedBrowsersDropdown),
-                layout(supportsMobileDropdown, supportsDockerDropdown).apply { width = "80%" },
-                layout(segmentsInput, hostsInput),
-                layout(trustFactorInput, keyLengthInput),
+                priceInput,
+                segmentsInput,
+                hostsInput,
+                trustFactorInput,
+                keyLengthInput,
+                authTypeDropdown,
+                supportedOSDropdown,
+                supportedBrowsersDropdown,
+                supportsMobileDropdown,
+                supportsDockerDropdown,
                 HorizontalLayout(findSoftwareButton, clearButton),
                 resultGrid,
                 noResultsLabel
@@ -159,13 +159,6 @@ class FindAuthSystemView(
     private fun showNoResults() {
         resultGrid.isVisible = false
         noResultsLabel.isVisible = true
-    }
-
-    private fun layout(vararg components: Component): HorizontalLayout {
-        val layout = HorizontalLayout(*components)
-        layout.setWidthFull()
-        layout.justifyContentMode = FlexComponent.JustifyContentMode.START
-        return layout
     }
 
 }

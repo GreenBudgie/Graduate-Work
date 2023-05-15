@@ -6,9 +6,8 @@ import com.vaadin.flow.router.Route
 import ru.sut.graduate.entity.AuthSystem
 import ru.sut.graduate.service.AuthSystemService
 import ru.sut.graduate.ui.component.EntityGrid
-import ru.sut.graduate.ui.component.MainLayout
 
-@Route(value = "", layout = MainLayout::class)
+@Route(value = "authSystems", layout = MainLayout::class)
 @PageTitle("Список систем аутентификации")
 class AuthSystemView(
     private val authSystemService: AuthSystemService
@@ -21,10 +20,10 @@ class AuthSystemView(
             .setHeader("Наименование")
             .isSortable = true
         grid.addIntEditableColumn(AuthSystem::segments)
-            .setHeader("Кол-во сегментов")
+            .setHeader("Кол-во доменов")
             .isSortable = true
         grid.addIntEditableColumn(AuthSystem::hosts)
-            .setHeader("Кол-во хостов в сегменте")
+            .setHeader("Кол-во пользователей")
             .isSortable = true
         grid.addMultiEnumEditableColumn(AuthSystem::supportedOS)
             .setHeader("Поддерживаемые ОС")
@@ -40,9 +39,6 @@ class AuthSystemView(
             .isSortable = true
         grid.addMultiEnumEditableColumn(AuthSystem::supportedBrowsers)
             .setHeader("Поддерживаемые браузеры")
-            .isSortable = true
-        grid.addIntEditableColumn(AuthSystem::keyLength)
-            .setHeader("Длина ключа")
             .isSortable = true
         grid.addBooleanEditableColumn(AuthSystem::supportsMobile)
             .setHeader("Поддержка мобильных устройств")

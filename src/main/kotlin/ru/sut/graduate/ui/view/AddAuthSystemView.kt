@@ -17,7 +17,6 @@ import ru.sut.graduate.service.AuthSystemService
 import ru.sut.graduate.ui.component.ClosableNotification
 import ru.sut.graduate.ui.component.EnumDropdown
 import ru.sut.graduate.ui.component.EnumMultiDropdown
-import ru.sut.graduate.ui.component.MainLayout
 import ru.sut.graduate.vo.AuthType
 import ru.sut.graduate.vo.BooleanEnum
 import ru.sut.graduate.vo.Browser
@@ -35,12 +34,12 @@ class AddAuthSystemView(
         nameInput.width = "50%"
 
         val segmentsInput = IntegerField()
-        segmentsInput.placeholder = "Количество сегментов"
+        segmentsInput.placeholder = "Количество доменов"
         segmentsInput.width = "25%"
         segmentsInput.min = 0
 
         val hostsInput = IntegerField()
-        hostsInput.placeholder = "Количество хостов в сегменте"
+        hostsInput.placeholder = "Количество пользователей"
         hostsInput.width = "25%"
         hostsInput.min = 0
 
@@ -50,7 +49,7 @@ class AddAuthSystemView(
 
         val authTypeDropdown = EnumDropdown(AuthType::class)
         authTypeDropdown.placeholder = "Тип аутентификации"
-        authTypeDropdown.width = "25%"
+        authTypeDropdown.width = "100%"
 
         val trustFactorInput = IntegerField()
         trustFactorInput.placeholder = "Уровень доверия"
@@ -119,6 +118,7 @@ class AddAuthSystemView(
         add(
             VerticalLayout(
                 layout(nameInput, priceInput).apply { width = "80%" },
+                layout(authTypeDropdown).apply { width = "50%" },
                 layout(supportedOSDropdown, supportedBrowsersDropdown),
                 layout(supportsMobileDropdown, supportsDockerDropdown).apply { width = "80%" },
                 layout(segmentsInput, hostsInput),

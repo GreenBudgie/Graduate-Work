@@ -12,13 +12,24 @@ import ru.sut.graduate.repository.AuthSystemRepository
 class AuthSystemService : GenericService<AuthSystem, AuthSystemRepository>() {
 
     fun findByExampleSoftware(example: AuthSystem): List<AuthSystem> {
-        val matcher = ExampleMatcher.matching().withIgnoreNullValues()
-        val exampleQuery = Example.of(example, matcher)
-        val result = repository.findAll(exampleQuery)
-        return result
-            .filter { it.supportedOS.containsAll(example.supportedOS) }
-            .filter { it.supportedBrowsers.containsAll(example.supportedBrowsers) }
+        return repository.findAll()
+            .asSequence()
+            .filter { it.segments greaterThan example.segments }
+            .filter { it.hosts greaterThan example.hosts }
+            .filter { it.supportedOS containsOne example.supportedOS }
+            .filter { example.authType == null || it.authType == example.authType }
+            .filter { it.trustFactor greaterThan example.trustFactor }
+            .filter { it.keyLength greaterThan example.keyLength }
+            .filter { it.supportedBrowsers containsOne example.supportedBrowsers }
+            .filter { example.supportsMobile == null || it.supportsMobile == example.supportsMobile }
+            .filter { example.supportsDocker == null || it.supportsDocker == example.supportsDocker }
+            .filter { it.price lessThan example.price }
+            .toList()
     }
+
+    private infix fun Int?.greaterThan(other: Int?) = (this ?: 0) >= (other ?: 0)
+    private infix fun Int?.lessThan(other: Int?) = (this ?: 0) <= (other ?: 0)
+    private infix fun <T> Set<T>.containsOne(other: Set<T>) = other.isEmpty() || other.any { this.contains(it) }
 
     override fun validate(entity: AuthSystem) = with(entity) {
         validateFieldUniqueness(entity, AuthSystem::name, "ПО с таким названием уже существует")
