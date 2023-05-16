@@ -1,16 +1,13 @@
 package ru.sut.graduate.ui.view
 
-import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.html.Paragraph
 import com.vaadin.flow.component.icon.Icon
 import com.vaadin.flow.component.icon.VaadinIcon
-import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.textfield.IntegerField
-import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import ru.sut.graduate.entity.AuthSystem
@@ -31,13 +28,40 @@ class FindAuthSystemView(
     private val noResultsLabel = Label("Система аутентификации с заданными параметрами не найдена").apply { isVisible = false }
 
     init {
-        resultGrid.addColumn(AuthSystem::name)
+        resultGrid.addStringEditableColumn(AuthSystem::name)
             .setHeader("Наименование")
             .isSortable = true
-        resultGrid.addColumn(AuthSystem::price)
+        resultGrid.addIntEditableColumn(AuthSystem::segments)
+            .setHeader("Кол-во доменов")
+            .isSortable = true
+        resultGrid.addIntEditableColumn(AuthSystem::hosts)
+            .setHeader("Кол-во пользователей")
+            .isSortable = true
+        resultGrid.addMultiEnumEditableColumn(AuthSystem::supportedOS)
+            .setHeader("Поддерживаемые ОС")
+            .isSortable = true
+        resultGrid.addEnumEditableColumn(AuthSystem::authType)
+            .setHeader("Тип аутентификации")
+            .isSortable = true
+        resultGrid.addIntEditableColumn(AuthSystem::trustFactor)
+            .setHeader("Уровень доверия")
+            .isSortable = true
+        resultGrid.addIntEditableColumn(AuthSystem::keyLength)
+            .setHeader("Длина ключа")
+            .isSortable = true
+        resultGrid.addMultiEnumEditableColumn(AuthSystem::supportedBrowsers)
+            .setHeader("Поддерживаемые браузеры")
+            .isSortable = true
+        resultGrid.addBooleanEditableColumn(AuthSystem::supportsMobile)
+            .setHeader("Поддержка мобильных устройств")
+            .isSortable = true
+        resultGrid.addBooleanEditableColumn(AuthSystem::supportsDocker)
+            .setHeader("Поддержка Docker")
+            .isSortable = true
+        resultGrid.addIntEditableColumn(AuthSystem::price)
             .setHeader("Цена")
             .isSortable = true
-        resultGrid.width = "50%"
+        resultGrid.width = "300%"
 
         val segmentsInput = IntegerField()
         segmentsInput.placeholder = "Количество доменов"
