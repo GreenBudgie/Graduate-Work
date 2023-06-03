@@ -33,8 +33,8 @@ class AuthSystemService : GenericService<AuthSystem, AuthSystemRepository>() {
 
     override fun validate(entity: AuthSystem) = with(entity) {
         validateFieldUniqueness(entity, AuthSystem::name, "ПО с таким названием уже существует")
-        segments.notNegative("Количество сегментов не может быть отрицательным")
-        hosts.notNegative("Количество хостов не может быть отрицательным")
+        segments.notNegative("Количество доменов не может быть отрицательным")
+        hosts.notNegative("Количество пользователей не может быть отрицательным")
         keyLength.notNegative("Длина ключа не может быть отрицательной")
         price.notNegative("Цена не может быть отрицательной")
         if((trustFactor ?: 0) !in (0..3)) {
